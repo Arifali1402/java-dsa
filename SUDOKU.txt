@@ -1,0 +1,85 @@
+class Solution{
+
+    public boolean isSafe(char[][] board, int row, int col, int number){
+        // row & column
+        for(int i=0;i<board.length;i++){
+            // for row
+            if(board[i][col] == (char)(number+'0')){
+                return false;
+            }
+            // for column
+            if(board[row][i] == (char)(number+'0')){
+                return false;
+            }
+        }
+
+        // for grid
+        // starting point of the grid
+        //starting row and column
+        int srow = (row/3) * 3;
+        int scol = (col/3) * 3;
+
+        A grid is simply a 3x3 matrix
+        for(int i=srow;i<srow+3;i++){
+            for(int j=scol;j<scol+3;j++){
+                if(board[i][j] == (char)(number+'0'))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    // Recursive Function
+    public boolean helper(char[][] board, int row, int col){
+        // if we are in the last cell
+        if(row == board.length){
+            return true;
+        }
+        // next row and column
+        int nrow = 0;
+        int ncol = 0;
+
+        // if we are not in the last column in the same row
+        if(col != board.length - 1){
+            nrow = row;
+            ncol = col+1;
+        }
+
+        // if we are in the last column in the same row
+        else{
+            nrow = row+1;
+            ncol = 0;
+        }
+
+        if(board[row][col] != '.'){
+            if(helper(board,nrow,ncol)){
+                return true;
+            }
+        }
+        // putting the number in the specific cell
+        else{
+            for(int i=1;i<=9;i++){
+                // if we can place the number in the cell
+                if(isSafe(board,row,col,i)){
+                    // placing the number in the cell
+                    board[row][col] = (char)(i+'0');
+                    if(helper(board, nrow, ncol)){
+                        return true;
+                    }
+                    else{
+                        // removing the number from the cell
+                        board[row][col] = '.';
+                    }
+                }
+            }
+        }
+    return false;
+    }
+
+    public void solveSudoku(char[][] board){
+        helper(board,0,0);
+    }
+}
